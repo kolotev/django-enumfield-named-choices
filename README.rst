@@ -1,5 +1,5 @@
-django-enumfield-named-choices-named-choices
-===============================
+django-enumfield-named-choices
+==============================
 
 Provides an enumeration Django model field (using IntegerField) with reusable enums and transition validation.
 
