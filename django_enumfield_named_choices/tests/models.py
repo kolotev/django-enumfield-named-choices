@@ -53,6 +53,14 @@ class BeerStyle(Enum):
     WEISSBIER = 2
 
 
+class NamedBeerStyle(Enum):
+    LAGER = 0
+    STOUT = 1
+    WEISSBIER = 2
+
+    interface = str
+
+
 class BeerState(Enum):
     FIZZY = 0
     STALE = 1
