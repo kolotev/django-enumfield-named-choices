@@ -133,7 +133,10 @@ class Enum(six.with_metaclass(EnumType)):
         :rtype: Enum.Value
         """
         if isinstance(name_or_numeric, six.string_types):
-            name_or_numeric = getattr(cls, name_or_numeric.upper())
+            if name_or_numeric.isdigit():
+                name_or_numeric = int(name_or_numeric)
+            else:
+                name_or_numeric = getattr(cls, name_or_numeric.upper())
 
         return cls.values.get(name_or_numeric)
 
@@ -145,7 +148,8 @@ class Enum(six.with_metaclass(EnumType)):
         :return: Attribute name for value
         :rtype: str
         """
-        return six.text_type(cls.get(name_or_numeric).name)
+        value = cls.get(name_or_numeric)
+        return six.text_type(value.name) if value is not None else None
 
     @classmethod
     def label(cls, name_or_numeric):
@@ -155,7 +159,8 @@ class Enum(six.with_metaclass(EnumType)):
         :return: label for value
         :rtype: str or
         """
-        return six.text_type(cls.get(name_or_numeric).label)
+        value = cls.get(name_or_numeric)
+        return six.text_type(value.label) if value is not None else None
 
     @classmethod
     def value(cls, name_or_numeric):
@@ -165,7 +170,8 @@ class Enum(six.with_metaclass(EnumType)):
         :return: label for value
         :rtype: str or
         """
-        return cls.get(name_or_numeric).value
+        value = cls.get(name_or_numeric)
+        return value.value if value is not None else None
 
     @classmethod
     def items(cls):
