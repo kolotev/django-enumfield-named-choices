@@ -19,7 +19,7 @@ coverage:
 clean:
 	rm -rf .tox/ dist/ *.egg *.egg-info .coverage* .eggs
 
-dist:
+dist: django_enumfield_named_choices/__init__.py
 	rm -rf dist/ 
 	python3 setup.py sdist bdist_wheel
 
