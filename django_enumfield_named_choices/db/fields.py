@@ -12,9 +12,9 @@ class EnumField(models.IntegerField):
     """
 
     def __init__(self, enum, *args, **kwargs):
-        kwargs['choices'] = enum.choices()
-        if 'default' not in kwargs:
-            kwargs['default'] = enum.default()
+        kwargs["choices"] = enum.choices()
+        if "default" not in kwargs:
+            kwargs["default"] = enum.default()
         self.enum = enum
         models.IntegerField.__init__(self, *args, **kwargs)
 
@@ -30,7 +30,7 @@ class EnumField(models.IntegerField):
         The current value is set as '_enum_[att_name]' on the model instance.
         """
         att_name = self.get_attname()
-        private_att_name = '_enum_%s' % att_name
+        private_att_name = "_enum_%s" % att_name
         enum = self.enum
 
         def set_enum(self, new_value):
@@ -58,22 +58,35 @@ class EnumField(models.IntegerField):
 
     def validate(self, value, model_instance):
         super(EnumField, self).validate(value, model_instance)
-        validators.validate_valid_transition(self.enum, self.value_from_object(model_instance), value)
+        validators.validate_valid_transition(
+            self.enum, self.value_from_object(model_instance), value
+        )
 
     def formfield(self, **kwargs):
-        defaults = {'widget': forms.Select,
-                    'form_class': forms.TypedChoiceField,
-                    'coerce': int,
-                    'choices': self.enum.choices(blank=self.blank)}
+        defaults = {
+            "widget": forms.Select,
+            "form_class": forms.TypedChoiceField,
+            "coerce": int if self.enum.interface is not str else str,
+            "choices": self.enum.choices(blank=self.blank),
+        }
         defaults.update(kwargs)
         return super(EnumField, self).formfield(**defaults)
 
     def deconstruct(self):
         name, path, args, kwargs = super(EnumField, self).deconstruct()
         if django.VERSION >= (1, 9):
-            kwargs['enum'] = self.enum
+            kwargs["enum"] = self.enum
         else:
             path = "django.db.models.fields.IntegerField"
-        if 'choices' in kwargs:
-            del kwargs['choices']
+        if "choices" in kwargs:
+            del kwargs["choices"]
         return name, path, args, kwargs
+
+    def get_prep_value(self, value):
+        value = self.enum.value(value)
+        return super().get_prep_value(value)
+
+    # def to_python(self, value):
+    #     print(f"to_python: value: {value}")
+    #     value = super().to_python(value)
+    #     return value
