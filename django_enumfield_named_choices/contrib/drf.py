@@ -43,4 +43,4 @@ class NamedEnumField(EnumField):
         swagger_schema_fields = {"type": "string"}
 
     def get_choice_value(self, enum_value):
-        return enum_value.name
+        return enum_value.name.lower()
